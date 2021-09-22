@@ -9,7 +9,7 @@ namespace WebshopBackendApi.Models
     {
         public UserModel()
         {
-          this.Id = Guid.NewGuid().ToString();
+          Id = Guid.NewGuid().ToString();
         }
 
         public string Id { get; set; }
@@ -18,6 +18,6 @@ namespace WebshopBackendApi.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public bool isAdministrator { get; set; }
-        public CartModel Cart;
+        public string CartId { get; set; }
     }
 }

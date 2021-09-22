@@ -10,7 +10,7 @@ using WebshopBackendApi.Models;
 
 namespace WebshopBackendApi.Controllers
 {
-    [Route("authentication")]
+    [Route("[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace WebshopBackendApi.Controllers
         public AuthenticationController(UserRepository repo) => UserRepository = repo;
 
         [HttpPost("login")]
-        public string Login()
+        public IActionResult Login()
         {
             string AuthHeader = Request.Headers["Authorization"];
             if (AuthHeader == null || !AuthHeader.StartsWith("Basic")) return null;
@@ -35,15 +35,15 @@ namespace WebshopBackendApi.Controllers
             {
                 UserModel user = UserRepository.Users.Find(user => user.Email == email && user.Password == password);
 
-                return JsonWebTokenUtility.Sign(new Dictionary<string, object> {
+                return Ok(JsonWebTokenUtility.Sign(new Dictionary<string, object> {
                     {"id", user.Id },
                     {"email", user.Email },
                     {"isAdministrator", user.isAdministrator }
-                });
+                }));
             }
             else
             {
-                return Unauthorized().ToString();
+                return Unauthorized();
             }
 
 

@@ -29,6 +29,7 @@ namespace WebshopBackendApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<UserRepository>();
+            services.AddSingleton<CartRepository>();
             services.AddControllers();
 
             services.AddSwaggerGen(c =>

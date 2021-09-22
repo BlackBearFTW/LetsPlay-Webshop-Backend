@@ -5,14 +5,15 @@ using System.Threading.Tasks;
 
 namespace WebshopBackendApi.Models
 {
-    public class CartModel
+    public class OrderItemModel
     {
-        public CartModel()
+        public OrderItemModel()
         {
             Id = Guid.NewGuid().ToString();
         }
 
         public string Id { get; set; }
-        public List<OrderItemModel> OrderItems { get; set; }
+        public object Product { get; set; }
+        public int Amount { get; set; }
     }
 }

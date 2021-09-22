@@ -11,18 +11,41 @@ using WebshopBackendApi.DTO;
 
 namespace WebshopBackendApi.Controllers
 {
-    [Route("users")]
+    [Route("[controller]s")]
     [ApiController]
     public class UserController : ControllerBase
     {
         private UserRepository UserRepository;
+        private CartRepository CartRepository;
 
-        public UserController(UserRepository repo) => UserRepository = repo;
+        public UserController(UserRepository UserRepository, CartRepository CartRepository) {
+            this.UserRepository = UserRepository;
+            this.CartRepository = CartRepository;
+        }
 
         [HttpGet]
-        public List<UserDTO> GetAll()
+        public IActionResult GetAll()
         {
-            return UserRepository.Users.ConvertAll(user => new UserDTO()
+            List<UserDTO> users = UserRepository.Users.ConvertAll(user => new UserDTO()
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                isAdministrator = user.isAdministrator
+            });
+
+            return Ok(users);
+        }
+
+        [HttpGet("{uuid}")]
+        public IActionResult Get(string uuid)
+        {
+            UserModel user = UserRepository.Users.Find(item => item.Id == uuid);
+
+            if (user is null) return BadRequest("Unknown user");
+
+            return Ok(new UserDTO()
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
@@ -32,19 +55,18 @@ namespace WebshopBackendApi.Controllers
             });
         }
 
-        [HttpGet("{uuid}")]
-        public UserDTO Get(string uuid)
+        [HttpGet("{uuid}/cart")]
+        public IActionResult GetCart(string uuid)
         {
             UserModel user = UserRepository.Users.Find(item => item.Id == uuid);
 
-            return new UserDTO()
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                isAdministrator = user.isAdministrator
-            };
+            if (user is null) return BadRequest("Unknown user");
+
+            CartModel cart = CartRepository.Carts.Find(item => item.Id == user.CartId);
+
+            if (cart is null) return StatusCode(500);
+
+            return Ok(cart);
         }
 
     }
