@@ -15,18 +15,14 @@ namespace WebshopBackendApi.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private UserRepository UserRepository;
-        private CartRepository CartRepository;
+        private readonly DatabaseContext DatabaseContext;
 
-        public UserController(UserRepository UserRepository, CartRepository CartRepository) {
-            this.UserRepository = UserRepository;
-            this.CartRepository = CartRepository;
-        }
+        public UserController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult Get()
         {
-            List<UserDTO> users = UserRepository.Users.ConvertAll(user => new UserDTO()
+            List<UserDTO> users = DatabaseContext.Users.ToList().ConvertAll(user => new UserDTO()
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
@@ -39,9 +35,9 @@ namespace WebshopBackendApi.Controllers
         }
 
         [HttpGet("{uuid}")]
-        public IActionResult Get(string uuid)
+        public IActionResult Get(Guid uuid)
         {
-            UserModel user = UserRepository.Users.Find(item => item.Id == uuid);
+            UserModel user = DatabaseContext.Users.Find(uuid);
 
             if (user is null) return BadRequest("Unknown user");
 
@@ -55,8 +51,8 @@ namespace WebshopBackendApi.Controllers
             });
         }
 
-        [HttpGet("{uuid}/cart")]
-        public IActionResult GetCart(string uuid)
+/*        [HttpGet("{uuid}/cart")]
+        public IActionResult GetCart(Guid uuid)
         {
             UserModel user = UserRepository.Users.Find(item => item.Id == uuid);
 
@@ -67,7 +63,7 @@ namespace WebshopBackendApi.Controllers
             if (cart is null) return StatusCode(500);
 
             return Ok(cart);
-        }
+        }*/
 
     }
 }
