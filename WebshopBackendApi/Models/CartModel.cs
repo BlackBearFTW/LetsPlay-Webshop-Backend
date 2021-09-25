@@ -9,10 +9,10 @@ namespace WebshopBackendApi.Models
     {
         public CartModel()
         {
-            Id = Guid.NewGuid().ToString();
+            Id = Guid.NewGuid();
         }
 
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         public List<OrderItemModel> OrderItems { get; set; }
     }
 }

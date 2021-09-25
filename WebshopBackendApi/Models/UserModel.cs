@@ -9,15 +9,15 @@ namespace WebshopBackendApi.Models
     {
         public UserModel()
         {
-          Id = Guid.NewGuid().ToString();
+          Id = Guid.NewGuid();
         }
 
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public bool isAdministrator { get; set; }
-        public string CartId { get; set; }
+        public Guid CartId { get; set; }
     }
 }
