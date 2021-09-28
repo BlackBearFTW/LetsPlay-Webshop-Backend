@@ -19,7 +19,7 @@ namespace WebshopBackendApi.Controllers
         public UserController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAll()
         {
             List<UserDTO> users = DatabaseContext.Users.ToList().ConvertAll(user => new UserDTO()
             {

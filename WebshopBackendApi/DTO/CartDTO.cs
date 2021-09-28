@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using WebshopBackendApi.Models;
 
-namespace WebshopBackendApi.Models
+namespace WebshopBackendApi.DTO
 {
-    public class CartModel
+    public class CartDTO
     {
-        [Key]
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
+        public List<OrderModel> Orders { get; set; }
     }
 }

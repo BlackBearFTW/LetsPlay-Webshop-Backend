@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace WebshopBackendApi.Models
 {
-    public class CartModel
+    public class OrderModel
     {
         [Key]
-        public Guid Id { get; set; }
-        public Guid UserId { get; set; }
-        public DateTime CreationDate { get; set; } = DateTime.Now;
+        public Guid CartId { get; set; }
+        public Guid ProductId { get; set; }
+        public int Amount { get; set; }
     }
 }

@@ -16,5 +16,7 @@ namespace WebshopBackendApi
 
         public DbSet<UserModel> Users { get; set; }
         public DbSet<CartModel> Carts { get; set; }
+        public DbSet<OrderModel> Orders { get; set; }
+        public DbSet<ProductModel> Products { get; set; }
     }
 }
