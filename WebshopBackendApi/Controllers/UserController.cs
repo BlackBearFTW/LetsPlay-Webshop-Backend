@@ -38,7 +38,7 @@ namespace WebshopBackendApi.Controllers
         {
             UserModel user = DatabaseContext.Users.Find(uuid);
 
-            if (user is null) return BadRequest("Unknown user");
+            if (user is null) return BadRequest("Unknown user.");
 
             return Ok(new UserDTO()
             {
@@ -50,19 +50,24 @@ namespace WebshopBackendApi.Controllers
             });
         }
 
-/*        [HttpGet("{uuid}/cart")]
+        [HttpGet("{uuid}/cart")]
         public IActionResult GetCart(Guid uuid)
         {
             UserModel user = DatabaseContext.Users.Find(uuid);
 
-            if (user is null) return BadRequest("Unknown user");
+            if (user is null) return BadRequest("Unknown user.");
 
-            CartModel cart = DatabaseContext.Carts.FirstOrDefault(cart => cart.Id == user.CartId);
+            CartModel cart = DatabaseContext.Carts.FirstOrDefault(cart => cart.UserId == user.Id);
 
-            if (cart is null) return StatusCode(500);
+            if (cart is null) return BadRequest("This user doesn't have a cart.");
 
-            return Ok(cart);
-        }*/
-
+            return Ok(new CartDTO()
+            {
+                Id = cart.Id,
+                UserId = cart.UserId,
+                CreationDate = cart.CreationDate,
+                Orders = DatabaseContext.Orders.Where(order => order.CartId == cart.Id).ToList()
+            });
+        }
     }
 }

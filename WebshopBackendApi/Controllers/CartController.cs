@@ -24,13 +24,11 @@ namespace WebshopBackendApi.Controllers
         }
 
         [HttpGet("{uuid}")]
-        public IActionResult Get(Guid uuid, [FromQuery] bool hideOrders = false)
+        public IActionResult Get(Guid uuid)
         {
             CartModel cart = DatabaseContext.Carts.Find(uuid);
 
-            if (cart is null) return BadRequest("Unknown cart");
-
-            if (hideOrders) return Ok(cart);
+            if (cart is null) return BadRequest("Unknown cart.");
 
             return Ok(new CartDTO()
             {

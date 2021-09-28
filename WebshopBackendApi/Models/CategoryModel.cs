@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace WebshopBackendApi.Models
 {
-    public class UserModel
+    public class CategoryModel
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public bool isAdministrator { get; set; }
+        public string Slug { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
     }
 }
