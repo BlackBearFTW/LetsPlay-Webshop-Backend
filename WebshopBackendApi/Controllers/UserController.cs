@@ -6,12 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebshopBackendApi.Models;
-using WebshopBackendApi.Repositories;
 using WebshopBackendApi.DTO;
 
 namespace WebshopBackendApi.Controllers
 {
-    [Route("[controller]s")]
+    [Route("api/[controller]s")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -54,11 +53,11 @@ namespace WebshopBackendApi.Controllers
 /*        [HttpGet("{uuid}/cart")]
         public IActionResult GetCart(Guid uuid)
         {
-            UserModel user = UserRepository.Users.Find(item => item.Id == uuid);
+            UserModel user = DatabaseContext.Users.Find(uuid);
 
             if (user is null) return BadRequest("Unknown user");
 
-            CartModel cart = CartRepository.Carts.Find(item => item.Id == user.CartId);
+            CartModel cart = DatabaseContext.Carts.FirstOrDefault(cart => cart.Id == user.CartId);
 
             if (cart is null) return StatusCode(500);
 

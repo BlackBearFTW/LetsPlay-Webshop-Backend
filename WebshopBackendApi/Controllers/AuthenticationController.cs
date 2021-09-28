@@ -2,21 +2,20 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using WebshopBackendApi.Repositories;
 using WebshopBackendApi.Utilities;
 using System.Text;
 using WebshopBackendApi.Models;
-
+using System.Linq;
 
 namespace WebshopBackendApi.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private UserRepository UserRepository;
+        private readonly DatabaseContext DatabaseContext;
 
-        public AuthenticationController(UserRepository repo) => UserRepository = repo;
+        public AuthenticationController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
 
         [HttpPost("login")]
         public IActionResult Login()
@@ -31,9 +30,9 @@ namespace WebshopBackendApi.Controllers
             string email = Credentials.Split(":")[0];
             string password = Credentials.Split(":")[1];
 
-            if (UserRepository.Users.Exists(user => user.Email == email && user.Password == password))
+            if (DatabaseContext.Users.Any(user => user.Email == email && user.Password == password))
             {
-                UserModel user = UserRepository.Users.Find(user => user.Email == email && user.Password == password);
+                UserModel user = DatabaseContext.Users.FirstOrDefault(user => user.Email == email && user.Password == password);
 
                 return Ok(JsonWebTokenUtility.Sign(new Dictionary<string, object> {
                     {"id", user.Id },
