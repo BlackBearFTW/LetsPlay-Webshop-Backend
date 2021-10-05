@@ -69,5 +69,15 @@ namespace WebshopBackendApi.Controllers
                 Orders = DatabaseContext.Orders.Where(order => order.CartId == cart.Id).ToList()
             });
         }
+
+        [HttpPost]
+        public IActionResult Post(UserModel userModel)
+        {
+            userModel.Id = Guid.NewGuid();
+            DatabaseContext.Users.Add(userModel);
+            DatabaseContext.SaveChanges();
+
+            return Ok();
+        }
     }
 }
