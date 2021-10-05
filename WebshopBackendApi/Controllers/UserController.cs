@@ -18,6 +18,7 @@ namespace WebshopBackendApi.Controllers
 
         public UserController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
 
+        [Authorize]
         [HttpGet]
         public IActionResult GetAll()
         {

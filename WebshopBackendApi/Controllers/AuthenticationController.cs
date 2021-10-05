@@ -6,9 +6,11 @@ using WebshopBackendApi.Utilities;
 using System.Text;
 using WebshopBackendApi.Models;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebshopBackendApi.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase

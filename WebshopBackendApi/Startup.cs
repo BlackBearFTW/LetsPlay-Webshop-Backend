@@ -1,19 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using MySql.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using JWT;
+
 
 namespace WebshopBackendApi
 {
@@ -30,6 +23,22 @@ namespace WebshopBackendApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtAuthenticationDefaults.AuthenticationScheme;
+            })
+        .AddJwt(options =>
+        {
+                // secrets
+                options.Keys = new[] { "HelloWorld" };
+
+                // force JwtDecoder to throw exception if JWT signature is invalid
+                options.VerifySignature = true;
+                options.Validate();
+        });
+
             services.AddControllers();
 
             services.AddDbContext<DatabaseContext>(opt => opt.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
@@ -56,6 +65,7 @@ namespace WebshopBackendApi
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
