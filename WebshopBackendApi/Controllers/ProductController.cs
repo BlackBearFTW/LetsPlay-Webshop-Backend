@@ -12,29 +12,29 @@ namespace WebshopBackendApi.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly DatabaseContext DatabaseContext;
+        private readonly DatabaseContext _databaseContext;
 
-        public ProductController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
+        public ProductController(DatabaseContext databaseContext) => this._databaseContext = databaseContext;
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] bool OnlyInStock = false)
+        public IActionResult GetAll([FromQuery] bool onlyInStock = false)
         {
-            if (OnlyInStock) return Ok(DatabaseContext.Products.Where(product => product.Stock > 0).ToList());
+            if (onlyInStock) return Ok(_databaseContext.Products.Where(product => product.Stock > 0).ToList());
 
-            return Ok(DatabaseContext.Products.ToList());
+            return Ok(_databaseContext.Products.ToList());
         }
 
         [HttpGet("{slug}")]
         public IActionResult GetFromSlug(string slug)
         {
-            return Ok(DatabaseContext.Products.FirstOrDefault(product => product.Slug == slug));
+            return Ok(_databaseContext.Products.FirstOrDefault(product => product.Slug == slug));
         }
 
         [HttpPost]
         public IActionResult Post(ProductModel productModel)
         {
-            DatabaseContext.Products.Add(productModel);
-            DatabaseContext.SaveChanges();
+            _databaseContext.Products.Add(productModel);
+            _databaseContext.SaveChanges();
 
             return Ok();
         }

@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using WebshopBackendApi.Utilities;
-using System.Text;
-using WebshopBackendApi.Models;
 using System.Linq;
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using WebshopBackendApi.Models;
+using WebshopBackendApi.Utilities;
 
 namespace WebshopBackendApi.Controllers
 {
@@ -15,37 +14,35 @@ namespace WebshopBackendApi.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly DatabaseContext DatabaseContext;
+        private readonly DatabaseContext _databaseContext;
 
-        public AuthenticationController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
+        public AuthenticationController(DatabaseContext databaseContext) => _databaseContext = databaseContext;
 
         [HttpPost("login")]
         public IActionResult Login()
         {
-            string AuthHeader = Request.Headers["Authorization"];
-            if (AuthHeader == null || !AuthHeader.StartsWith("Basic")) return null;
+            string authHeader = Request.Headers["Authorization"];
+            if (authHeader == null || !authHeader.StartsWith("Basic")) return null;
 
-            string EncodedCredentials = AuthHeader.Split(" ")[1];
+            string encodedCredentials = authHeader.Split(" ")[1];
 
-            byte[] data = System.Convert.FromBase64String(EncodedCredentials);
-            string Credentials = System.Text.ASCIIEncoding.ASCII.GetString(data);
-            string email = Credentials.Split(":")[0];
-            string password = Credentials.Split(":")[1];
+            byte[] data = Convert.FromBase64String(encodedCredentials);
+            string credentials = ASCIIEncoding.ASCII.GetString(data);
+            string email = credentials.Split(":")[0];
+            string password = credentials.Split(":")[1];
 
-            if (DatabaseContext.Users.Any(user => user.Email == email && user.Password == password))
+            if (_databaseContext.Users.Any(user => user.Email == email && user.Password == password))
             {
-                UserModel user = DatabaseContext.Users.FirstOrDefault(user => user.Email == email && user.Password == password);
+                UserModel user = _databaseContext.Users.FirstOrDefault(user => user.Email == email && user.Password == password);
 
                 return Ok(JsonWebTokenUtility.Sign(new Dictionary<string, object> {
                     {"id", user.Id },
                     {"email", user.Email },
-                    {"isAdministrator", user.isAdministrator }
+                    {"isAdministrator", user.IsAdministrator }
                 }));
             }
-            else
-            {
-                return Unauthorized();
-            }
+
+            return Unauthorized();
 
 
 
