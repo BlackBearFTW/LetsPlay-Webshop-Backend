@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using JWT;
-
+using JWT.Algorithms;
 
 namespace WebshopBackendApi
 {
@@ -24,6 +24,8 @@ namespace WebshopBackendApi
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddSingleton<IAlgorithmFactory>(new DelegateAlgorithmFactory(new HMACSHA256Algorithm())); // or any other implementation
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtAuthenticationDefaults.AuthenticationScheme;
@@ -36,7 +38,6 @@ namespace WebshopBackendApi
 
                 // force JwtDecoder to throw exception if JWT signature is invalid
                 options.VerifySignature = true;
-                options.Validate();
         });
 
             services.AddControllers();

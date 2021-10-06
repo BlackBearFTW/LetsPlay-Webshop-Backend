@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebshopBackendApi.Models;
 using WebshopBackendApi.DTO;
+using JWT;
 
 namespace WebshopBackendApi.Controllers
 {
