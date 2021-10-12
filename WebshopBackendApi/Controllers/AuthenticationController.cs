@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebshopBackendApi.Controllers
 {
-    [AllowAnonymous]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
@@ -36,15 +36,18 @@ namespace WebshopBackendApi.Controllers
             {
                 UserModel user = DatabaseContext.Users.FirstOrDefault(user => user.Email == email && user.Password == password);
 
-                return Ok(JsonWebTokenUtility.Sign(new Dictionary<string, object> {
+                string token = JsonWebTokenUtility.Sign(new Dictionary<string, object> {
                     {"id", user.Id },
                     {"email", user.Email },
                     {"isAdministrator", user.isAdministrator }
-                }));
+                });
+
+
+                return Ok(new { token });
             }
             else
             {
-                return Unauthorized();
+                return Unauthorized("Invalid credentials.");
             }
 
 
