@@ -8,6 +8,7 @@ using WebshopBackendApi.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using static BCrypt.Net.BCrypt;
+using System.Security.Claims;
 
 
 namespace WebshopBackendApi.Controllers
@@ -40,11 +41,11 @@ namespace WebshopBackendApi.Controllers
 
             if (!Verify(password, user.Password)) return BadRequest(new { error = "Invalid credentials." });
 
-            string token = JsonWebTokenUtility.Sign(new Dictionary<string, object> {
-                    {"id", user.Id },
-                    {"email", user.Email },
-                    {"isAdministrator", user.isAdministrator }
-                });
+            string token = JsonWebTokenUtility.Sign(new Claim[] {
+                new Claim("id", $"{user.Id}"),
+                new Claim(ClaimTypes.Email, $"{user.Email}"),
+                new Claim(ClaimTypes.Role, user.isAdministrator ? "Administrator" : "User")
+            });
 
 
             return Ok(new { token });

@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebshopBackendApi.Models;
 using WebshopBackendApi.DTO;
-using JWT;
 using static BCrypt.Net.BCrypt;
 
 namespace WebshopBackendApi.Controllers
@@ -20,7 +19,7 @@ namespace WebshopBackendApi.Controllers
 
         public UserController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
 
-        
+        [Authorize]
         [HttpGet]
         public IActionResult GetAll()
         {
