@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using WebshopBackendApi.Models;
 using WebshopBackendApi.DTO;
 using JWT;
+using static BCrypt.Net.BCrypt;
 
 namespace WebshopBackendApi.Controllers
 {
@@ -60,6 +61,7 @@ namespace WebshopBackendApi.Controllers
         public IActionResult Post(UserModel userModel)
         {
             userModel.Id = Guid.NewGuid();
+            userModel.Password = HashPassword(userModel.Password);
             DatabaseContext.Users.Add(userModel);
             DatabaseContext.SaveChanges();
 

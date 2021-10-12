@@ -15,7 +15,6 @@ namespace WebshopBackendApi.Models
         public string LastName { get; set; }
         public string Email { get; set; }
         
-        [JsonIgnore]
         public string Password { get; set; }
         public bool isAdministrator { get; set; } = false;
     }

@@ -7,10 +7,12 @@ using System.Text;
 using WebshopBackendApi.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using static BCrypt.Net.BCrypt;
+
 
 namespace WebshopBackendApi.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
@@ -23,7 +25,7 @@ namespace WebshopBackendApi.Controllers
         public IActionResult Login()
         {
             string AuthHeader = Request.Headers["Authorization"];
-            if (AuthHeader == null || !AuthHeader.StartsWith("Basic")) return null;
+            if (AuthHeader == null || !AuthHeader.StartsWith("Basic")) return BadRequest();
 
             string EncodedCredentials = AuthHeader.Split(" ")[1];
 
@@ -32,26 +34,20 @@ namespace WebshopBackendApi.Controllers
             string email = Credentials.Split(":")[0];
             string password = Credentials.Split(":")[1];
 
-            if (DatabaseContext.Users.Any(user => user.Email == email && user.Password == password))
-            {
-                UserModel user = DatabaseContext.Users.FirstOrDefault(user => user.Email == email && user.Password == password);
+            UserModel user = DatabaseContext.Users.FirstOrDefault(user => user.Email == email);
 
-                string token = JsonWebTokenUtility.Sign(new Dictionary<string, object> {
+            if (user is null) return BadRequest("Unknown email.");
+
+            if (!Verify(password, user.Password)) return BadRequest("Invalid credentials.");
+
+            string token = JsonWebTokenUtility.Sign(new Dictionary<string, object> {
                     {"id", user.Id },
                     {"email", user.Email },
                     {"isAdministrator", user.isAdministrator }
                 });
 
 
-                return Ok(new { token });
-            }
-            else
-            {
-                return Unauthorized("Invalid credentials.");
-            }
-
-
-
+            return Ok(new { token });
         }
 
     }
