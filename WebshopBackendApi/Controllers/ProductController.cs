@@ -18,13 +18,15 @@ namespace WebshopBackendApi.Controllers
         public ProductController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] string search, [FromQuery] bool OnlyInStock = false)
+        public IActionResult GetAll([FromQuery] string search, [FromQuery] bool onlyInStock = false, [FromQuery] int page = 1, [FromQuery] int size = 150)
         {
             List<ProductModel> products = DatabaseContext.Products.ToList();
 
-            products = search is not null ? products.Where(product => product.Name.Contains(search)).ToList() : products;
+            products = products.Skip((page - 1) * size).Take(size).ToList();
 
-            products = OnlyInStock ? products.Where(product => product.Stock > 0).ToList() : products;
+            products = search is not null ? products.Where(product => product.Name.ToLower().Contains(search.ToLower())).ToList() : products;
+
+            products = onlyInStock ? products.Where(product => product.Stock > 0).ToList() : products;
 
             return Ok(products);
         }

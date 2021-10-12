@@ -60,6 +60,7 @@ namespace WebshopBackendApi.Controllers
         [HttpPost]
         public IActionResult Post(UserModel userModel)
         {
+            if (userModel.Email is null || userModel.Password is null) return BadRequest(new { error = "Email and password are required." });
             if (DatabaseContext.Users.Any(user => user.Email == userModel.Email)) return BadRequest(new { error = "Email is already in use." });
 
             userModel.Id = Guid.NewGuid();
