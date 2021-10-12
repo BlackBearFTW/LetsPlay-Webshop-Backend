@@ -7,6 +7,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using JWT;
 using JWT.Algorithms;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+using System.Net.Mime;
 
 namespace WebshopBackendApi
 {
@@ -33,17 +36,16 @@ namespace WebshopBackendApi
             })
         .AddJwt(options =>
         {
-                // secrets
-                options.Keys = new[] { "HelloWorld" };
+            // secrets
+            options.Keys = new[] { "HelloWorld" };
 
-                // force JwtDecoder to throw exception if JWT signature is invalid
-                options.VerifySignature = true;
+            // force JwtDecoder to throw exception if JWT signature is invalid
+            options.VerifySignature = true;
         });
 
             services.AddControllers();
 
             services.AddDbContext<DatabaseContext>(opt => opt.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
-
 
             services.AddSwaggerGen(c =>
             {
@@ -67,6 +69,7 @@ namespace WebshopBackendApi
             app.UseRouting();
 
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
