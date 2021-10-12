@@ -19,20 +19,11 @@ namespace WebshopBackendApi.Controllers
 
         public UserController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
 
-        [Authorize]
+        
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<UserDTO> users = DatabaseContext.Users.ToList().ConvertAll(user => new UserDTO()
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                isAdministrator = user.isAdministrator
-            });
-
-            return Ok(users);
+            return Ok(DatabaseContext.Users.ToList());
         }
 
         [HttpGet("{uuid}")]
@@ -42,14 +33,7 @@ namespace WebshopBackendApi.Controllers
 
             if (user is null) return BadRequest("Unknown user.");
 
-            return Ok(new UserDTO()
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                isAdministrator = user.isAdministrator
-            });
+            return Ok(user);
         }
 
         [HttpGet("{uuid}/cart")]
