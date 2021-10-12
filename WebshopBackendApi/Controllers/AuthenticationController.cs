@@ -25,7 +25,7 @@ namespace WebshopBackendApi.Controllers
         public IActionResult Login()
         {
             string AuthHeader = Request.Headers["Authorization"];
-            if (AuthHeader == null || !AuthHeader.StartsWith("Basic")) return BadRequest();
+            if (AuthHeader == null || !AuthHeader.StartsWith("Basic")) return BadRequest(new { error = "Unknown authorization method." });
 
             string EncodedCredentials = AuthHeader.Split(" ")[1];
 
@@ -36,9 +36,9 @@ namespace WebshopBackendApi.Controllers
 
             UserModel user = DatabaseContext.Users.FirstOrDefault(user => user.Email == email);
 
-            if (user is null) return BadRequest("Unknown email.");
+            if (user is null) return BadRequest(new { error = "Unknown email." });
 
-            if (!Verify(password, user.Password)) return BadRequest("Invalid credentials.");
+            if (!Verify(password, user.Password)) return BadRequest(new { error = "Invalid credentials." });
 
             string token = JsonWebTokenUtility.Sign(new Dictionary<string, object> {
                     {"id", user.Id },

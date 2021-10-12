@@ -34,7 +34,7 @@ namespace WebshopBackendApi.Controllers
         {
             ProductModel product = DatabaseContext.Products.FirstOrDefault(product => product.Id == id);
 
-            if (product is null) return BadRequest("Unknown product.");
+            if (product is null) return BadRequest(new { error = "Unknown product." });
 
             return Ok(product);
         }
@@ -44,7 +44,7 @@ namespace WebshopBackendApi.Controllers
         {
             ProductModel product = DatabaseContext.Products.FirstOrDefault(product => product.Slug == slug);
 
-            if (product is null) return BadRequest("Unknown product.");
+            if (product is null) return BadRequest(new { error = "Unknown product." });
 
             return Ok(product);
         }
@@ -56,7 +56,7 @@ namespace WebshopBackendApi.Controllers
             DatabaseContext.Products.Add(productModel);
             DatabaseContext.SaveChanges();
 
-            return Ok();
+            return Ok(productModel);
         }
 
 
@@ -65,7 +65,7 @@ namespace WebshopBackendApi.Controllers
         {
             ProductModel productModel = DatabaseContext.Products.FirstOrDefault(product => product.Id == id);
 
-            if (productModel is null) return BadRequest("Unknown product.");
+            if (productModel is null) return BadRequest(new { error = "Unknown product." });
 
             productModel.Slug = updatedProductModel.Slug ?? productModel.Slug;
             productModel.Name = updatedProductModel.Name ?? productModel.Name;
@@ -82,7 +82,7 @@ namespace WebshopBackendApi.Controllers
         {
             ProductModel productModel = DatabaseContext.Products.FirstOrDefault(product => product.Slug == slug);
 
-            if (productModel is null) return BadRequest("Unknown product.");
+            if (productModel is null) return BadRequest(new { error = "Unknown product." });
 
             productModel.Name = updatedProductModel.Name ?? productModel.Name;
             if (updatedProductModel.Price is not null) productModel.Price = updatedProductModel.Price;

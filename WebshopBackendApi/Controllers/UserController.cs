@@ -32,7 +32,7 @@ namespace WebshopBackendApi.Controllers
         {
             UserModel user = DatabaseContext.Users.Find(uuid);
 
-            if (user is null) return BadRequest("Unknown user.");
+            if (user is null) return BadRequest(new { error = "Unknown user." });
 
             return Ok(user);
         }
@@ -42,11 +42,11 @@ namespace WebshopBackendApi.Controllers
         {
             UserModel user = DatabaseContext.Users.Find(uuid);
 
-            if (user is null) return BadRequest("Unknown user.");
+            if (user is null) return BadRequest(new { error = "Unknown user." });
 
             CartModel cart = DatabaseContext.Carts.FirstOrDefault(cart => cart.UserId == user.Id);
 
-            if (cart is null) return BadRequest("This user doesn't have a cart.");
+            if (cart is null) return BadRequest(new { error = "This user doesn't have a cart." });
 
             return Ok(new CartDTO()
             {
@@ -60,12 +60,14 @@ namespace WebshopBackendApi.Controllers
         [HttpPost]
         public IActionResult Post(UserModel userModel)
         {
+            if (DatabaseContext.Users.Any(user => user.Email == userModel.Email)) return BadRequest(new { error = "Email is already in use." });
+
             userModel.Id = Guid.NewGuid();
             userModel.Password = HashPassword(userModel.Password);
             DatabaseContext.Users.Add(userModel);
             DatabaseContext.SaveChanges();
 
-            return Ok();
+            return Ok(userModel);
         }
     }
 }

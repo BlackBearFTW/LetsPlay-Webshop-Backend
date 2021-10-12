@@ -28,7 +28,7 @@ namespace WebshopBackendApi.Controllers
         {
             CartModel cart = DatabaseContext.Carts.Find(uuid);
 
-            if (cart is null) return BadRequest("Unknown cart.");
+            if (cart is null) return BadRequest(new { error = "Unknown cart." });
 
             return Ok(new CartDTO()
             {
@@ -46,7 +46,7 @@ namespace WebshopBackendApi.Controllers
             DatabaseContext.Carts.Add(cartModel);
             DatabaseContext.SaveChanges();
 
-            return Ok();
+            return Ok(cartModel);
         }
     }
 }
