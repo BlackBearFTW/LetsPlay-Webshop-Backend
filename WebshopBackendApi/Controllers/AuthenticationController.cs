@@ -13,7 +13,7 @@ using System.Security.Claims;
 
 namespace WebshopBackendApi.Controllers
 {
-
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
@@ -42,7 +42,7 @@ namespace WebshopBackendApi.Controllers
             if (!Verify(password, user.Password)) return BadRequest(new { error = "Invalid credentials." });
 
             string token = JsonWebTokenUtility.Sign(new Claim[] {
-                new Claim("id", $"{user.Id}"),
+                new Claim(ClaimTypes.NameIdentifier, $"{user.Id}"),
                 new Claim(ClaimTypes.Email, $"{user.Email}"),
                 new Claim(ClaimTypes.Role, user.isAdministrator ? "Administrator" : "User")
             });

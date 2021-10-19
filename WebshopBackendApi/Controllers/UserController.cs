@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using WebshopBackendApi.Models;
 using WebshopBackendApi.DTO;
 using static BCrypt.Net.BCrypt;
+using System.Security.Claims;
 
 namespace WebshopBackendApi.Controllers
 {
@@ -19,13 +20,14 @@ namespace WebshopBackendApi.Controllers
 
         public UserController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
 
-        [Authorize]
+        [Authorize(Roles = "Administrator")]
         [HttpGet]
         public IActionResult GetAll()
         {
             return Ok(DatabaseContext.Users.ToList());
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpGet("{uuid}")]
         public IActionResult Get(Guid uuid)
         {
@@ -35,6 +37,19 @@ namespace WebshopBackendApi.Controllers
 
             return Ok(user);
         }
+
+        [Authorize(Roles = "Administrator, User")]
+        [HttpGet("me")]
+        public IActionResult GetMe()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            UserModel user = DatabaseContext.Users.Find(Guid.Parse(userId));
+
+            if (user is null) return BadRequest(new { error = "Unknown user." });
+
+            return Ok(user);
+        }
+
 
         [HttpGet("{uuid}/cart")]
         public IActionResult GetCart(Guid uuid)

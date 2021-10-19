@@ -23,18 +23,7 @@ namespace WebshopBackendApi.Utilities
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            Console.WriteLine(token);
             return tokenHandler.WriteToken(token);
         }
-
-/*        public static string Validate(string token)
-        {
-            return jwtBuilderGenerator().MustVerifySignature().Decode(token);
-        }
-
-        private static JwtBuilder jwtBuilderGenerator()
-        {
-            return JwtBuilder.Create().WithAlgorithm(new HMACSHA256Algorithm()).WithSecret("HelloWorld");
-        }*/
     }
 }
