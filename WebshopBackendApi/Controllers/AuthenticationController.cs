@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using static BCrypt.Net.BCrypt;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace WebshopBackendApi.Controllers
@@ -51,5 +52,28 @@ namespace WebshopBackendApi.Controllers
             return Ok(new { token });
         }
 
+        [HttpPost("register")]
+        public IActionResult Register(UserModel userModel)
+        {
+            if (userModel.Email is null || userModel.Password is null) return BadRequest(new { error = "Email and password are required." });
+            if (DatabaseContext.Users.Any(user => user.Email == userModel.Email)) return BadRequest(new { error = "Email is already in use." });
+
+            userModel.Id = Guid.NewGuid();
+            userModel.Password = HashPassword(userModel.Password);
+            DatabaseContext.Users.Add(userModel);
+            DatabaseContext.SaveChanges();
+
+            return Ok(userModel);
+        }
+
+        [HttpPost("forgot-password/")]
+        public IActionResult ForgotPassword([FromBody] string email)
+        {
+            if (email is null || !new EmailAddressAttribute().IsValid(email)) return BadRequest(new { error = "Please supply a valid email adress." });
+
+
+
+            return Ok(new { token = "DummyToken"});
+        }
     }
 }

@@ -70,19 +70,5 @@ namespace WebshopBackendApi.Controllers
                 Orders = DatabaseContext.Orders.Where(order => order.CartId == cart.Id).ToList()
             });
         }
-
-        [HttpPost]
-        public IActionResult Post(UserModel userModel)
-        {
-            if (userModel.Email is null || userModel.Password is null) return BadRequest(new { error = "Email and password are required." });
-            if (DatabaseContext.Users.Any(user => user.Email == userModel.Email)) return BadRequest(new { error = "Email is already in use." });
-
-            userModel.Id = Guid.NewGuid();
-            userModel.Password = HashPassword(userModel.Password);
-            DatabaseContext.Users.Add(userModel);
-            DatabaseContext.SaveChanges();
-
-            return Ok(userModel);
-        }
     }
 }
