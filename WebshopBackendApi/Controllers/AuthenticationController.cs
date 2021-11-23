@@ -66,8 +66,8 @@ namespace WebshopBackendApi.Controllers
             return Ok(userModel);
         }
 
-        [HttpPost("forgot-password/")]
-        public IActionResult ForgotPassword([FromBody] string email)
+        [HttpPost("forgot-password")]
+        public IActionResult ForgotPassword([FromBody] String email)
         {
             if (email is null || !new EmailAddressAttribute().IsValid(email)) return BadRequest(new { error = "Please supply a valid email adress." });
 
