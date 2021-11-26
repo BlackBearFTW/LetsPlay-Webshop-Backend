@@ -67,12 +67,12 @@ namespace WebshopBackendApi.Controllers
         {
             ProductModel productModel = DatabaseContext.Products.FirstOrDefault(product => product.Id == id);
 
+            Console.WriteLine(updatedProductModel.Stock);
+
             if (productModel is null) return BadRequest(new { error = "Unknown product." });
 
-            productModel.Slug = updatedProductModel.Slug ?? productModel.Slug;
-            productModel.Name = updatedProductModel.Name ?? productModel.Name;
-            if (updatedProductModel.Price is not null) productModel.Price = updatedProductModel.Price;
-            if (updatedProductModel.Stock is not null) productModel.Stock = updatedProductModel.Stock;
+            productModel = updatedProductModel;
+            productModel.Id = id;
 
             DatabaseContext.SaveChanges();
 
@@ -86,13 +86,16 @@ namespace WebshopBackendApi.Controllers
 
             if (productModel is null) return BadRequest(new { error = "Unknown product." });
 
-            productModel.Name = updatedProductModel.Name ?? productModel.Name;
-            if (updatedProductModel.Price is not null) productModel.Price = updatedProductModel.Price;
-            if (updatedProductModel.Stock is not null) productModel.Stock = updatedProductModel.Stock;
+            Guid id = productModel.Id;
+            productModel = updatedProductModel;
+            productModel.Id = id;
+            productModel.Slug = slug;
 
             DatabaseContext.SaveChanges();
 
             return Ok(productModel);
         }
+
+        // TODO: Add patch for partial updates
     }
 }

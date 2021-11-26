@@ -10,7 +10,7 @@ namespace WebshopBackendApi.Models
     public class UserModel
     {
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

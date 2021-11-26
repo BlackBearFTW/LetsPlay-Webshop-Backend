@@ -9,7 +9,7 @@ namespace WebshopBackendApi.Models
     public class ReviewModel
     {
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public Guid ProductId { get; set; }
         public string Title { get; set; }
