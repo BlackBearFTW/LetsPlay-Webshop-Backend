@@ -16,22 +16,22 @@ namespace WebshopBackendApi.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly DatabaseContext DatabaseContext;
+        private readonly DatabaseContext _context;
 
-        public UserController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
+        public UserController(DatabaseContext databaseContext) => this._context = databaseContext;
 
         [Authorize(Roles = "Administrator")]
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(DatabaseContext.Users.ToList());
+            return Ok(_context.Users.ToList());
         }
 
         [Authorize(Roles = "Administrator")]
         [HttpGet("{uuid}")]
         public IActionResult Get(Guid uuid)
         {
-            UserModel user = DatabaseContext.Users.Find(uuid);
+            UserModel user = _context.Users.Find(uuid);
 
             if (user is null) return BadRequest(new { error = "Unknown user." });
 
@@ -43,7 +43,7 @@ namespace WebshopBackendApi.Controllers
         public IActionResult GetMe()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            UserModel user = DatabaseContext.Users.Find(Guid.Parse(userId));
+            UserModel user = _context.Users.Find(Guid.Parse(userId));
 
             if (user is null) return BadRequest(new { error = "Unknown user." });
 
@@ -54,11 +54,11 @@ namespace WebshopBackendApi.Controllers
         [HttpGet("{uuid}/cart")]
         public IActionResult GetCart(Guid uuid)
         {
-            UserModel user = DatabaseContext.Users.Find(uuid);
+            UserModel user = _context.Users.Find(uuid);
 
             if (user is null) return BadRequest(new { error = "Unknown user." });
 
-            CartModel cart = DatabaseContext.Carts.FirstOrDefault(cart => cart.UserId == user.Id);
+            CartModel cart = _context.Carts.FirstOrDefault(cart => cart.UserId == user.Id);
 
             if (cart is null) return BadRequest(new { error = "This user doesn't have a cart." });
 
@@ -67,7 +67,7 @@ namespace WebshopBackendApi.Controllers
                 Id = cart.Id,
                 UserId = cart.UserId,
                 CreationDate = cart.CreationDate,
-                Orders = DatabaseContext.Orders.Where(order => order.CartId == cart.Id).ToList()
+                Orders = _context.Orders.Where(order => order.CartId == cart.Id).ToList()
             });
         }
     }

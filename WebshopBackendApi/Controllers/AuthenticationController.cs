@@ -19,9 +19,9 @@ namespace WebshopBackendApi.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly DatabaseContext DatabaseContext;
+        private readonly DatabaseContext _context;
 
-        public AuthenticationController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
+        public AuthenticationController(DatabaseContext databaseContext) => this._context = databaseContext;
 
         [HttpPost("login")]
         public IActionResult Login()
@@ -36,7 +36,7 @@ namespace WebshopBackendApi.Controllers
             string email = Credentials.Split(":")[0];
             string password = Credentials.Split(":")[1];
 
-            UserModel user = DatabaseContext.Users.FirstOrDefault(user => user.Email == email);
+            UserModel user = _context.Users.FirstOrDefault(user => user.Email == email);
 
             if (user is null) return BadRequest(new { error = "Unknown email." });
 
@@ -56,12 +56,12 @@ namespace WebshopBackendApi.Controllers
         public IActionResult Register(UserModel userModel)
         {
             if (userModel.Email is null || userModel.Password is null) return BadRequest(new { error = "Email and password are required." });
-            if (DatabaseContext.Users.Any(user => user.Email == userModel.Email)) return BadRequest(new { error = "Email is already in use." });
+            if (_context.Users.Any(user => user.Email == userModel.Email)) return BadRequest(new { error = "Email is already in use." });
 
             userModel.Id = Guid.NewGuid();
             userModel.Password = HashPassword(userModel.Password);
-            DatabaseContext.Users.Add(userModel);
-            DatabaseContext.SaveChanges();
+            _context.Users.Add(userModel);
+            _context.SaveChanges();
 
             return Ok(userModel);
         }

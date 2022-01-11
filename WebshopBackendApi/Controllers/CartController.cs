@@ -13,20 +13,20 @@ namespace WebshopBackendApi.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly DatabaseContext DatabaseContext;
+        private readonly DatabaseContext _context;
 
-        public CartController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
+        public CartController(DatabaseContext databaseContext) => this._context = databaseContext;
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(DatabaseContext.Carts.ToList());
+            return Ok(_context.Carts.ToList());
         }
 
         [HttpGet("{uuid}")]
         public IActionResult Get(Guid uuid)
         {
-            CartModel cart = DatabaseContext.Carts.Find(uuid);
+            CartModel cart = _context.Carts.Find(uuid);
 
             if (cart is null) return BadRequest(new { error = "Unknown cart." });
 
@@ -35,7 +35,7 @@ namespace WebshopBackendApi.Controllers
                 Id = cart.Id,
                 UserId = cart.UserId,
                 CreationDate = cart.CreationDate,
-                Orders = DatabaseContext.Orders.Where(order => order.CartId == cart.Id).ToList()
+                Orders = _context.Orders.Where(order => order.CartId == cart.Id).ToList()
             });
         }
 
@@ -43,8 +43,8 @@ namespace WebshopBackendApi.Controllers
         public IActionResult Post(CartModel cartModel)
         {
             cartModel.Id = Guid.NewGuid();
-            DatabaseContext.Carts.Add(cartModel);
-            DatabaseContext.SaveChanges();
+            _context.Carts.Add(cartModel);
+            _context.SaveChanges();
 
             return Ok(cartModel);
         }

@@ -13,14 +13,14 @@ namespace WebshopBackendApi.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly DatabaseContext DatabaseContext;
+        private readonly DatabaseContext _context;
 
-        public ProductController(DatabaseContext DatabaseContext) => this.DatabaseContext = DatabaseContext;
+        public ProductController(DatabaseContext databaseContext) => this._context = databaseContext;
 
         [HttpGet]
         public IActionResult GetAll([FromQuery] string search, [FromQuery] bool onlyInStock = false, [FromQuery] int page = 1, [FromQuery] int size = 150)
         {
-            List<ProductModel> products = DatabaseContext.Products.ToList();
+            List<ProductModel> products = _context.Products.ToList();
 
             products = products.Skip((page - 1) * size).Take(size).ToList();
 
@@ -34,7 +34,7 @@ namespace WebshopBackendApi.Controllers
         [HttpGet("{id:guid}")]
         public IActionResult GetById(Guid id)
         {
-            ProductModel product = DatabaseContext.Products.FirstOrDefault(product => product.Id == id);
+            ProductModel product = _context.Products.FirstOrDefault(product => product.Id == id);
 
             if (product is null) return BadRequest(new { error = "Unknown product." });
 
@@ -44,7 +44,7 @@ namespace WebshopBackendApi.Controllers
         [HttpGet("{slug}")]
         public IActionResult GetBySlug(string slug)
         {
-            ProductModel product = DatabaseContext.Products.FirstOrDefault(product => product.Slug == slug);
+            ProductModel product = _context.Products.FirstOrDefault(product => product.Slug == slug);
 
             if (product is null) return BadRequest(new { error = "Unknown product." });
 
@@ -55,43 +55,40 @@ namespace WebshopBackendApi.Controllers
         public IActionResult Post(ProductModel productModel)
         {
             productModel.Id = Guid.NewGuid();
-            DatabaseContext.Products.Add(productModel);
-            DatabaseContext.SaveChanges();
+            _context.Products.Add(productModel);
+            _context.SaveChanges();
 
             return Ok(productModel);
         }
 
-
         [HttpPut("{id:guid}")]
         public IActionResult PutById(Guid id, ProductModel updatedProductModel)
         {
-            ProductModel productModel = DatabaseContext.Products.FirstOrDefault(product => product.Id == id);
+            bool doesExist = _context.Products.Any(product => product.Id == id);
 
-            Console.WriteLine(updatedProductModel.Stock);
+            if (!doesExist) return BadRequest(new { error = "Unknown product." });
 
-            if (productModel is null) return BadRequest(new { error = "Unknown product." });
+            updatedProductModel.Id = id;
 
-            productModel = updatedProductModel;
-            productModel.Id = id;
+            _context.Products.Update(updatedProductModel);
+            _context.SaveChanges();
 
-            DatabaseContext.SaveChanges();
-
-            return Ok(productModel);
+            return Ok(updatedProductModel);
         }
 
         [HttpPut("{slug}")]
         public IActionResult PutBySlug(string slug, ProductModel updatedProductModel)
         {
-            ProductModel productModel = DatabaseContext.Products.FirstOrDefault(product => product.Slug == slug);
+            ProductModel productModel = _context.Products.FirstOrDefault(product => product.Slug == slug);
 
             if (productModel is null) return BadRequest(new { error = "Unknown product." });
 
-            Guid id = productModel.Id;
+            updatedProductModel.Id = productModel.Id;
+            updatedProductModel.Slug = productModel.Slug;
             productModel = updatedProductModel;
-            productModel.Id = id;
-            productModel.Slug = slug;
 
-            DatabaseContext.SaveChanges();
+
+            _context.SaveChanges();
 
             return Ok(productModel);
         }
