@@ -32,7 +32,7 @@ namespace WebshopBackendApi.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public IActionResult GetById(Guid id)
+        public IActionResult Get(Guid id)
         {
             ProductModel product = _context.Products.FirstOrDefault(product => product.Id == id);
 
@@ -42,7 +42,7 @@ namespace WebshopBackendApi.Controllers
         }
 
         [HttpGet("{slug}")]
-        public IActionResult GetBySlug(string slug)
+        public IActionResult Get(string slug)
         {
             ProductModel product = _context.Products.FirstOrDefault(product => product.Slug == slug);
 
@@ -62,7 +62,7 @@ namespace WebshopBackendApi.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public IActionResult PutById(Guid id, ProductModel updatedProductModel)
+        public IActionResult Put(Guid id, ProductModel updatedProductModel)
         {
             bool doesExist = _context.Products.Any(product => product.Id == id);
 
@@ -77,7 +77,7 @@ namespace WebshopBackendApi.Controllers
         }
 
         [HttpPut("{slug}")]
-        public IActionResult PutBySlug(string slug, ProductModel updatedProductModel)
+        public IActionResult Put(string slug, ProductModel updatedProductModel)
         {
             ProductModel productModel = _context.Products.FirstOrDefault(product => product.Slug == slug);
 

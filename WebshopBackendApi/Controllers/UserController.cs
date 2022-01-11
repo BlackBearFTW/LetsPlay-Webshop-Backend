@@ -38,7 +38,7 @@ namespace WebshopBackendApi.Controllers
             return Ok(user);
         }
 
-        [Authorize(Roles = "Administrator, User")]
+        [Authorize]
         [HttpGet("me")]
         public IActionResult GetMe()
         {
@@ -50,7 +50,7 @@ namespace WebshopBackendApi.Controllers
             return Ok(user);
         }
 
-
+        [Authorize(Roles = "Administrator")]
         [HttpGet("{uuid}/cart")]
         public IActionResult GetCart(Guid uuid)
         {
