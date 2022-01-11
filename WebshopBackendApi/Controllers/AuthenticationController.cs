@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using static BCrypt.Net.BCrypt;
 using System.Security.Claims;
 using System.ComponentModel.DataAnnotations;
-
+using WebshopBackendApi.DTO;
 
 namespace WebshopBackendApi.Controllers
 {
@@ -48,8 +48,16 @@ namespace WebshopBackendApi.Controllers
                 new Claim(ClaimTypes.Role, user.isAdministrator ? "Administrator" : "User")
             });
 
+            UserDTO userDTO = new()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                isAdministrator = user.isAdministrator
+            };
 
-            return Ok(new { token });
+            return Ok(new { token, userDTO });
         }
 
         [HttpPost("register")]
@@ -71,7 +79,7 @@ namespace WebshopBackendApi.Controllers
         {
             if (email is null || !new EmailAddressAttribute().IsValid(email)) return BadRequest(new { error = "Please supply a valid email adress." });
 
-
+            // TODO: Implement token generation system
 
             return Ok(new { token = "DummyToken"});
         }

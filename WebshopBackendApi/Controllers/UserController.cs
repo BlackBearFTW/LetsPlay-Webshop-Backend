@@ -24,7 +24,16 @@ namespace WebshopBackendApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(_context.Users.ToList());
+            return Ok(
+                _context.Users.ToList().ConvertAll(user => new UserDTO()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    isAdministrator = user.isAdministrator
+                })
+                );
         }
 
         [Authorize(Roles = "Administrator")]
@@ -35,7 +44,16 @@ namespace WebshopBackendApi.Controllers
 
             if (user is null) return BadRequest(new { error = "Unknown user." });
 
-            return Ok(user);
+            UserDTO userDTO = new()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                isAdministrator = user.isAdministrator
+            };
+
+            return Ok(userDTO);
         }
 
         [Authorize]
@@ -47,7 +65,16 @@ namespace WebshopBackendApi.Controllers
 
             if (user is null) return BadRequest(new { error = "Unknown user." });
 
-            return Ok(user);
+            UserDTO userDTO = new()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                isAdministrator = user.isAdministrator
+            };
+
+            return Ok(userDTO);
         }
 
         [Authorize(Roles = "Administrator")]

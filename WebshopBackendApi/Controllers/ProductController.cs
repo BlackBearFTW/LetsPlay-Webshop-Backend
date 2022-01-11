@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -51,6 +52,7 @@ namespace WebshopBackendApi.Controllers
             return Ok(product);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         public IActionResult Post(ProductModel productModel)
         {
@@ -61,6 +63,7 @@ namespace WebshopBackendApi.Controllers
             return Ok(productModel);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPut("{id:guid}")]
         public IActionResult Put(Guid id, ProductModel updatedProductModel)
         {
@@ -76,6 +79,7 @@ namespace WebshopBackendApi.Controllers
             return Ok(updatedProductModel);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPut("{slug}")]
         public IActionResult Put(string slug, ProductModel updatedProductModel)
         {
@@ -83,10 +87,11 @@ namespace WebshopBackendApi.Controllers
 
             if (productModel is null) return BadRequest(new { error = "Unknown product." });
 
-            updatedProductModel.Id = productModel.Id;
-            updatedProductModel.Slug = productModel.Slug;
-            productModel = updatedProductModel;
-
+            productModel.Name = updatedProductModel.Name;
+            productModel.Description = updatedProductModel.Description;
+            productModel.Price = updatedProductModel.Price;
+            productModel.CategoryId = updatedProductModel.CategoryId;
+            productModel.Stock = updatedProductModel.Stock;
 
             _context.SaveChanges();
 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebshopBackendApi.Models;
 using WebshopBackendApi.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebshopBackendApi.Controllers
 {
@@ -17,6 +18,7 @@ namespace WebshopBackendApi.Controllers
 
         public CartController(DatabaseContext databaseContext) => this._context = databaseContext;
 
+        [Authorize(Roles = "Administrator")]
         [HttpGet]
         public IActionResult GetAll()
         {
